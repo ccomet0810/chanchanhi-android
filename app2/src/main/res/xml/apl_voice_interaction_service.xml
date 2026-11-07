@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 기본 어시스턴트 자격에 필요한 서비스만 지정합니다. 잠금 화면·로컬 호출은 지원하지 않습니다. -->
+<voice-interaction-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:sessionService="com.example.aplassistmvp0.assistant.AplVoiceInteractionSessionService"
+    android:recognitionService="com.example.aplassistmvp0.assistant.AplRecognitionService"
+    android:supportsAssist="true"
+    android:supportsLaunchVoiceAssistFromKeyguard="false"
+    android:supportsLocalInteraction="false" />

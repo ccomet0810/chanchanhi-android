@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 직접 API 호출은 HTTPS만 사용한다. -->
+    <base-config cleartextTrafficPermitted="false" />
+    <!-- adb reverse로 연결한 이 PC의 loopback만 HTTP를 허용한다. -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+    </domain-config>
+</network-security-config>

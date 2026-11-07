@@ -1,0 +1,522 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "type": "string",
+      "enum": [
+        "GUIDE",
+        "ASK",
+        "OBSERVE",
+        "WAIT",
+        "RECOVER",
+        "COMPLETE"
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "goalKind": {
+      "type": "string",
+      "enum": [
+        "STATE",
+        "CHANGE",
+        "NEW_EVENT",
+        "ACTIVITY",
+        "INSPECT",
+        "UNKNOWN"
+      ]
+    },
+    "conditions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "truth": {
+            "type": "string",
+            "enum": [
+              "SATISFIED",
+              "UNSATISFIED",
+              "UNKNOWN",
+              "NOT_APPLICABLE"
+            ]
+          },
+          "evidence": {
+            "type": "string",
+            "enum": [
+              "OBSERVED",
+              "USER_REPORTED",
+              "INFERRED",
+              "UNKNOWN"
+            ]
+          },
+          "evidenceNodeIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 30
+          },
+          "requirementId": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "requirementVersion": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "basis": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "REQUEST",
+                  "ANSWER",
+                  "INFERRED"
+                ]
+              },
+              "key": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quote": {
+                "type": "string"
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "evidenceNodeIds": {
+                "type": "array",
+                "maxItems": 30,
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "required": [
+              "kind",
+              "key",
+              "quote",
+              "rationale",
+              "evidenceNodeIds"
+            ]
+          },
+          "phase": {
+            "type": "string",
+            "enum": [
+              "OUTCOME",
+              "PREPARATION"
+            ]
+          },
+          "expectations": {
+            "type": "array",
+            "maxItems": 30,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "property": {
+                  "type": "string",
+                  "enum": [
+                    "RANGE",
+                    "CHECKED",
+                    "SELECTED",
+                    "INPUT_PRESENT"
+                  ]
+                },
+                "subject": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "role": {
+                      "type": "string"
+                    },
+                    "resource": {
+                      "type": "string"
+                    },
+                    "label": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "role",
+                    "resource",
+                    "label"
+                  ]
+                },
+                "expectedNumber": {
+                  "type": [
+                    "number",
+                    "null"
+                  ]
+                },
+                "expectedBoolean": {
+                  "type": [
+                    "boolean",
+                    "null"
+                  ]
+                }
+              },
+              "required": [
+                "property",
+                "subject",
+                "expectedNumber",
+                "expectedBoolean"
+              ]
+            }
+          }
+        },
+        "required": [
+          "key",
+          "description",
+          "required",
+          "truth",
+          "evidence",
+          "evidenceNodeIds",
+          "requirementId",
+          "requirementVersion",
+          "basis",
+          "phase",
+          "expectations"
+        ]
+      },
+      "maxItems": 30
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "nodeIds": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "maxItems": 30
+          },
+          "dependsOn": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30
+          }
+        },
+        "required": [
+          "key",
+          "description",
+          "nodeIds",
+          "dependsOn"
+        ]
+      },
+      "maxItems": 30
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "ALL",
+              "ANY",
+              "BEFORE",
+              "SET",
+              "CONDITIONAL",
+              "MAINTAIN"
+            ]
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30
+          }
+        },
+        "required": [
+          "kind",
+          "members"
+        ]
+      },
+      "maxItems": 30
+    },
+    "operation": {
+      "type": "string",
+      "enum": [
+        "TAP",
+        "DOUBLE_TAP",
+        "LONG_PRESS",
+        "SCROLL_UP",
+        "SCROLL_DOWN",
+        "SCROLL_LEFT",
+        "SCROLL_RIGHT",
+        "ADJUST",
+        "SELECT",
+        "INPUT",
+        "BACK",
+        "OPEN",
+        "NONE"
+      ]
+    },
+    "targetNodeId": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "message": {
+      "type": "string"
+    },
+    "question": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "neededNow": {
+          "type": "boolean"
+        },
+        "changesGuidance": {
+          "type": "boolean"
+        },
+        "canEnterInApp": {
+          "type": "boolean"
+        },
+        "conditionKeys": {
+          "type": "array",
+          "maxItems": 30,
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "key",
+        "message",
+        "neededNow",
+        "changesGuidance",
+        "canEnterInApp",
+        "conditionKeys"
+      ]
+    },
+    "waitKind": {
+      "type": "string",
+      "enum": [
+        "USER_INPUT",
+        "USER_ACTIVITY",
+        "SCREEN_TRANSITION",
+        "NONE"
+      ]
+    },
+    "relevantNodeIds": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 30
+    },
+    "newEventNodeIds": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 30
+    },
+    "effect": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "PREPARE",
+        "COMMIT",
+        "START_ACTIVITY"
+      ]
+    },
+    "commitOutcome": {
+      "type": "string",
+      "enum": [
+        "NONE",
+        "PENDING",
+        "SUCCEEDED",
+        "FAILED",
+        "UNKNOWN"
+      ]
+    },
+    "outcomeNodeIds": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "integer"
+      }
+    },
+    "scopeNodeIds": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "integer"
+      }
+    },
+    "outcomeReceiptId": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "conditionEdits": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "requirementId": {
+            "type": "integer"
+          },
+          "expectedVersion": {
+            "type": "integer"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "REPLACE",
+              "RETIRE"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "basis": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "REQUEST",
+                  "ANSWER",
+                  "INFERRED"
+                ]
+              },
+              "key": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "quote": {
+                "type": "string"
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "evidenceNodeIds": {
+                "type": "array",
+                "maxItems": 30,
+                "items": {
+                  "type": "integer"
+                }
+              }
+            },
+            "required": [
+              "kind",
+              "key",
+              "quote",
+              "rationale",
+              "evidenceNodeIds"
+            ]
+          }
+        },
+        "required": [
+          "requirementId",
+          "expectedVersion",
+          "kind",
+          "reason",
+          "basis"
+        ]
+      }
+    },
+    "actionGates": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "targetNodeId": {
+            "type": "integer"
+          },
+          "conditionKeys": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "maxItems": 30
+          }
+        },
+        "required": [
+          "targetNodeId",
+          "conditionKeys"
+        ]
+      }
+    }
+  },
+  "required": [
+    "kind",
+    "summary",
+    "goalKind",
+    "conditions",
+    "tasks",
+    "relations",
+    "operation",
+    "targetNodeId",
+    "message",
+    "question",
+    "waitKind",
+    "relevantNodeIds",
+    "newEventNodeIds",
+    "effect",
+    "commitOutcome",
+    "outcomeNodeIds",
+    "scopeNodeIds",
+    "outcomeReceiptId",
+    "conditionEdits",
+    "actionGates"
+  ]
+}

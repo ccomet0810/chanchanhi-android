@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 유료 API는 HTTPS, ChatGPT 구독 개발 연결은 USB loopback을 사용한다. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 어시스턴트 호출의 한 번 음성 입력에만 사용하며 사용자가 설정 화면에서 허용합니다. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- 최근 앱/홈 화면을 거쳐 돌아올 때 대상 앱 기록을 런처로 덮어쓰지 않도록 홈 앱만 식별한다. -->
+    <queries>
+        <intent><action android:name="android.intent.action.SET_ALARM" /></intent>
+        <!-- 실제 설치된 공개 런처 앱만 로컬 목록으로 읽습니다. 전체 패키지 조회 권한은 사용하지 않습니다. -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+        <!-- Android 11 이상에서도 설치된 음성 안내 엔진을 찾을 수 있도록 한다. -->
+        <intent>
+            <action android:name="android.intent.action.TTS_SERVICE" />
+        </intent>
+        <!-- 설치된 시스템 음성 인식 화면을 찾는다. 앱 자체는 음성을 녹음·저장하지 않는다. -->
+        <intent>
+            <action android:name="android.speech.action.RECOGNIZE_SPEECH" />
+        </intent>
+        <!-- 역할 변경 후에도 자기 서비스가 아닌 공개 음성 인식 서비스를 명시적으로 찾습니다. -->
+        <intent>
+            <action android:name="android.speech.RecognitionService" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.HOME" />
+        </intent>
+    </queries>
+
+    <application
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:windowSoftInputMode="adjustResize"
+        android:theme="@style/Theme.APLAssistMVP0">
+        <activity
+            android:name=".MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- 내부 버튼으로만 여는 권한·기본 어시스턴트 설정 화면입니다. 외부 extras는 처리하지 않습니다. -->
+        <activity android:name=".assistant.AssistantSetupActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <!-- 기본 어시스턴트 서비스와 세션은 Android 시스템 전용 바인딩 권한으로 보호합니다. -->
+        <service android:name=".assistant.AplVoiceInteractionService"
+            android:exported="true" android:label="@string/assistant_service_name"
+            android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter>
+                <action android:name="android.service.voice.VoiceInteractionService" />
+            </intent-filter>
+            <meta-data android:name="android.voice_interaction"
+                android:resource="@xml/apl_voice_interaction_service" />
+        </service>
+        <service android:name=".assistant.AplVoiceInteractionSessionService"
+            android:exported="true" android:permission="android.permission.BIND_VOICE_INTERACTION" />
+        <!-- 역할의 음성 서비스 항목입니다. 외부 시스템 인식 엔진으로만 위임하며 자체 녹음은 없습니다. -->
+        <service android:name=".assistant.AplRecognitionService"
+            android:exported="true" android:label="@string/assistant_service_name"
+            android:permission="android.permission.RECORD_AUDIO">
+            <intent-filter>
+                <action android:name="android.speech.RecognitionService" />
+            </intent-filter>
+            <meta-data android:name="android.speech" android:resource="@xml/apl_recognition_service" />
+        </service>
+        <!-- 시스템만 서비스를 바인딩할 수 있다. 접근성 활성화는 사용자가 설정에서 수행한다. -->
+        <service
+            android:name=".accessibility.AssistAccessibilityService"
+            android:exported="true"
+            android:label="@string/accessibility_service_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/assist_accessibility_service" />
+        </service>
+    </application>
+
+</manifest>

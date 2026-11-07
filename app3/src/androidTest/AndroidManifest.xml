@@ -1,0 +1,7 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity android:name="com.example.aplassistmvp0.v3.V3FormFixtureActivity" android:exported="true" android:label="찬찬히 3 공개 시험"
+            android:theme="@android:style/Theme.Material.Light.NoActionBar" android:windowSoftInputMode="adjustResize"
+            android:enableOnBackInvokedCallback="true" />
+    </application>
+</manifest>

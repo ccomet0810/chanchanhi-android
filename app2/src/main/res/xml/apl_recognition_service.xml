@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 역할 호환용 항목이며 기본 음성 엔진 후보로 선택되지 않게 합니다. 인식은 외부 엔진에 위임합니다. -->
+<recognition-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:selectableAsDefault="false" />

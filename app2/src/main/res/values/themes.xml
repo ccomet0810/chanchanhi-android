@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.APLAssistMVP0" parent="android:Theme.Material.Light.NoActionBar">
+        <!-- Platform EditText cursor/selection counterpart of AplFoundation.InkArgb. -->
+        <item name="android:colorAccent">#151515</item>
+        <item name="colorControlNormal">#141414</item>
+    </style>
+
+    <!-- A system assistant is a translucent window over the current app. -->
+    <style name="Theme.APL2.Assistant" parent="Theme.APLAssistMVP0">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+    </style>
+</resources>
