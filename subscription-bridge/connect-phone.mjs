@@ -5,6 +5,9 @@ import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 
 const directory = dirname(fileURLToPath(import.meta.url));
+// app3 빌드의 applicationId입니다. 클래스 namespace는 기존 com.example.aplassistmvp0을 유지합니다.
+const APP_ID = 'dev.ccomet.apl3';
+const MAIN_ACTIVITY = `${APP_ID}/com.example.aplassistmvp0.MainActivity`;
 const sdk = process.env.ANDROID_SDK_ROOT || process.env.ANDROID_HOME ||
   (process.platform === 'win32' ? join(process.env.LOCALAPPDATA, 'Android/Sdk') : join(homedir(), 'Library/Android/sdk'));
 const adb = join(sdk, 'platform-tools', process.platform === 'win32' ? 'adb.exe' : 'adb');
@@ -26,10 +29,10 @@ try {
   const info = await status.json();
   if (!status.ok || !info.ready || !info.models?.includes('gpt-6.1-terra')) throw new Error('PC의 ChatGPT 연결과 크레딧 사용 중지 확인을 먼저 완료해주세요.');
   await run(['-s', serial, 'reverse', 'tcp:18765', 'tcp:18765']);
-  await run(['-s', serial, 'shell', 'am', 'force-stop', 'com.example.aplassistmvp0']);
+  await run(['-s', serial, 'shell', 'am', 'force-stop', APP_ID]);
   // 연결 키는 인수·클립보드·출력에 넣지 않고 앱 전용 파일에 stdin으로만 전달한다.
-  await run(['-s', serial, 'shell', 'run-as', 'com.example.aplassistmvp0', 'sh', '-c', "'cat > files/bridge-connection.json'"],
+  await run(['-s', serial, 'shell', 'run-as', APP_ID, 'sh', '-c', "'cat > files/bridge-connection.json'"],
     JSON.stringify({version:1,mode:'usb',endpoint:'http://127.0.0.1:18765',pairingToken:token,certificateSha256:''}));
-  await run(['-s', serial, 'shell', 'am', 'start', '-n', 'com.example.aplassistmvp0/.MainActivity']);
+  await run(['-s', serial, 'shell', 'am', 'start', '-n', MAIN_ACTIVITY]);
   console.log('APL 구독 USB 연결 완료. 앱에서 ChatGPT 구독 · 6.1 Terra를 선택하세요.');
 } catch (error) { console.error(error.message); process.exitCode = 1; }

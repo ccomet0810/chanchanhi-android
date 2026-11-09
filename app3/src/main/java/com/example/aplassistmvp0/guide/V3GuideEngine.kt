@@ -202,6 +202,7 @@ internal class V3GuideEngine(
             message="화면을 확인하고 있어요."))
         request=scope.launch {
             try {
+                // 직전 요청과의 최소 간격(350ms)은 브리지가 짧게 기다려 맞춘다.
                 delay(240)
                 var feedback:V3PlanDiagnostic?=null
                 fun repair(attempt:Int,diagnostic:V3PlanDiagnostic?,scopeProof:GuideScopedTap?=null):Boolean {
@@ -648,7 +649,7 @@ internal class V3GuideEngine(
         cancelObservationWait()
         invalidateRequest()
         val generation=requestGeneration
-        val status=checkBridge()
+        val status=try{checkBridge()}catch(e:CancellationException){throw e}catch(_:Exception){BridgeStatus(false,"AI 연결을 확인해주세요.")}
         if(session.goal!==goal || generation!=requestGeneration)return false
         if(!status.ready){pause(status.message);return false}
         paused=false;lastKey=null;displayed=null;awaitingNext=false;inputHold=null;disabledScope=null
