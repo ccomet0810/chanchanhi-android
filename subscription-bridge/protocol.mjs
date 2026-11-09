@@ -139,7 +139,7 @@ export function upstreamError(status, code) {
 }
 
 // 실행 가능한 앱의 실제 선택과 HOME 판별은 폰에서 합니다. 브리지는 기본 형식과 공통 제외 앱을 다시 확인합니다.
-const excludedGuidePackages = new Set(['android', 'com.android.systemui', 'com.example.aplassistmvp0',
+const excludedGuidePackages = new Set(['android', 'com.android.systemui', 'com.example.aplassistmvp0', 'dev.ccomet.apl3',
   'com.android.launcher', 'com.android.launcher2', 'com.android.launcher3', 'com.google.android.apps.nexuslauncher',
   'com.sec.android.app.launcher', 'com.miui.home', 'com.huawei.android.launcher', 'com.oppo.launcher', 'com.microsoft.launcher']);
 export function allowedGuidePackage(packageName) {

@@ -111,7 +111,7 @@ private fun AplApplication(model: AplAppViewModel, startWithSetup: Boolean, open
             !assist.serviceConnected -> navigate("setup")
             !setup.assistant -> navigate("call")
             connection.pairingToken.isBlank() -> navigate("connection")
-            !AplVoiceInteractionService.requestSession() -> { localMessage = "도우미 연결을 확인해주세요."; navigate("call") }
+            !AplVoiceInteractionService.requestSession() -> { navigate("call"); localMessage = "도우미 연결을 확인해주세요." }
         }
     }
     val title = when (page) {

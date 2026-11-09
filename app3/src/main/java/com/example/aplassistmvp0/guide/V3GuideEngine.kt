@@ -202,7 +202,8 @@ internal class V3GuideEngine(
             message="화면을 확인하고 있어요."))
         request=scope.launch {
             try {
-                delay(240)
+                // 브리지는 직전 요청 시작 후 350ms 안의 새 요청을 거절한다. 취소된 직전 요청도 이미 시작됐을 수 있으므로 400ms를 둔다.
+                delay(400)
                 var feedback:V3PlanDiagnostic?=null
                 fun repair(attempt:Int,diagnostic:V3PlanDiagnostic?,scopeProof:GuideScopedTap?=null):Boolean {
                     val state=screens.value;val live=state.snapshot
@@ -648,7 +649,7 @@ internal class V3GuideEngine(
         cancelObservationWait()
         invalidateRequest()
         val generation=requestGeneration
-        val status=checkBridge()
+        val status=try{checkBridge()}catch(e:CancellationException){throw e}catch(_:Exception){BridgeStatus(false,"AI 연결을 확인해주세요.")}
         if(session.goal!==goal || generation!=requestGeneration)return false
         if(!status.ready){pause(status.message);return false}
         paused=false;lastKey=null;displayed=null;awaitingNext=false;inputHold=null;disabledScope=null

@@ -17,9 +17,12 @@ const PUBLIC_APP = 'APL ChatGPT Bridge';
 const PORT = 18765;
 const terminalRefreshErrors = new Set(['invalid_grant', 'invalid_refresh_token', 'token_expired', 'refresh_token_expired', 'refresh_token_invalidated', 'refresh_token_reused']);
 
-export function accountReady(account) {
+// 요청 경로는 allowPendingRefresh로 들어와 accessToken()이 남은 갱신을 먼저 마무리하게 한다.
+// 그렇지 않으면 일시적인 서명 확인 실패 뒤 pendingRefresh가 남아 모든 안내가 영구히 차단된다.
+export function accountReady(account, { allowPendingRefresh = false } = {}) {
   return Boolean(account?.connected && account.credentials && account.scopes?.includes('chatgpt.tokens.use.direct') &&
-    account.scopes.includes('resource.invoke') && account.costConfirmed && account.model && account.models?.some(model => model.slug === account.model) && !account.pendingRefresh);
+    account.scopes.includes('resource.invoke') && account.costConfirmed && account.model && account.models?.some(model => model.slug === account.model) &&
+    (allowPendingRefresh || !account.pendingRefresh));
 }
 
 // 테스트는 모의 저장소를 주입한다. Windows는 DPAPI, Linux 개인 서버는 보호된 암호화 저장소를 쓴다.
@@ -60,6 +63,7 @@ export function createBridge({ store, initialState, pairingToken, fetcher = fetc
       !selected?.connected ? 'ChatGPT 계정을 연결해주세요. AI 요청은 보내지 않습니다.' :
       !selected.scopes.includes('chatgpt.tokens.use.direct') ? '구독 사용 권한이 없습니다. 연결을 다시 확인해주세요.' :
       !selected.model ? '사용 가능한 모델을 확인해주세요. AI 요청은 차단되어 있습니다.' :
+      selected.pendingRefresh && selected.costConfirmed ? '인증 갱신을 마무리하지 못했습니다. 다음 안내 요청이나 모델 목록 새로 확인 때 다시 시도합니다.' :
       '크레딧 사용 중지 설정을 확인해야 AI 안내를 활성화할 수 있습니다.');
     return { ready, message, connected: Boolean(selected?.connected),
       account: selected ? { email: selected.email, name: selected.name, label: selected.label } : null,
@@ -178,7 +182,7 @@ export function createBridge({ store, initialState, pairingToken, fetcher = fetc
   async function guide(value, controller) {
     const input = validateGuideInput(value);
     const selected = account();
-    if (!accountReady(selected)) throw new BridgeError('not_ready', '관리 화면에서 ChatGPT 연결과 크레딧 설정을 먼저 확인해주세요. AI 요청은 보내지 않았습니다.', 409);
+    if (!accountReady(selected, { allowPendingRefresh: true })) throw new BridgeError('not_ready', '관리 화면에서 ChatGPT 연결과 크레딧 설정을 먼저 확인해주세요. AI 요청은 보내지 않았습니다.', 409);
     if (activeGuide) throw new BridgeError('guide_busy', '이전 안내가 끝날 때까지 기다려주세요.', 429);
     if (now() - lastGuideStart < 3000) throw new BridgeError('guide_rate_limit', '3초 뒤 다시 요청해주세요. AI 요청은 보내지 않았습니다.', 429);
     if (sensitiveGoal(input.goal)) return { action: 'manual', targetNodeId: null,
@@ -206,7 +210,7 @@ export function createBridge({ store, initialState, pairingToken, fetcher = fetc
   async function modelResponse(value, controller) {
     const input = validateModelRequest(value);
     const selected = account();
-    if (!accountReady(selected)) throw new BridgeError('not_ready', 'PC 연결 화면에서 ChatGPT 계정과 크레딧 설정을 확인해주세요.', 409);
+    if (!accountReady(selected, { allowPendingRefresh: true })) throw new BridgeError('not_ready', 'PC 연결 화면에서 ChatGPT 계정과 크레딧 설정을 확인해주세요.', 409);
     if (!selected.models.some(model => model.slug === input.model)) throw new BridgeError('model_unavailable', '구독 계정에서 선택한 모델을 사용할 수 없습니다.', 403);
     if (activeGuide) throw new BridgeError('guide_busy', '이전 구독 요청이 끝나면 다시 시작해주세요.', 429);
     if (now() - lastGuideStart < 350) throw new BridgeError('guide_rate_limit', '잠시 뒤 직접 다시 요청해주세요.', 429);
