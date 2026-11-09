@@ -47,12 +47,14 @@ import com.example.aplassistmvp0.apl2.settings.AplPreferences
 import com.example.aplassistmvp0.assistant.AplVoiceInteractionService
 import com.example.aplassistmvp0.guide.*
 import com.example.aplassistmvp0.state.AssistStateRepository
+import com.example.aplassistmvp0.update.PlayUpdateCoordinator
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
     private lateinit var model: AplAppViewModel
+    private val updates = PlayUpdateCoordinator(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +66,10 @@ class MainActivity : ComponentActivity() {
         AplPreferences.initialize(applicationContext)
         GuideController.initialize(applicationContext)
         model = ViewModelProvider(this)[AplAppViewModel::class.java]
-        setContent { AplTheme { AplApplication(model, intent.getBooleanExtra(EXTRA_SETUP, false), ::openSettings) } }
+        setContent {
+            val updateReady by updates.readyToInstall.collectAsStateWithLifecycle()
+            AplTheme { AplApplication(model, intent.getBooleanExtra(EXTRA_SETUP, false), ::openSettings, updateReady, updates::installDownloaded) }
+        }
     }
 
     override fun onResume() { super.onResume(); if (::model.isInitialized) model.refresh() }
@@ -82,7 +87,8 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-private fun AplApplication(model: AplAppViewModel, startWithSetup: Boolean, openSettings: (String) -> Unit) {
+private fun AplApplication(model: AplAppViewModel, startWithSetup: Boolean, openSettings: (String) -> Unit,
+                           updateReady: Boolean = false, installUpdate: () -> Unit = {}) {
     val context = LocalContext.current
     val appName = stringResource(R.string.app_name)
     val screenGuideName = stringResource(R.string.accessibility_service_name)
@@ -137,6 +143,13 @@ private fun AplApplication(model: AplAppViewModel, startWithSetup: Boolean, open
             ) {
                 item { AplPageHeader(title, if (mainPage) null else ({ back() })) }
                 if (localMessage.isNotEmpty()) item { Notice(localMessage) }
+                if (updateReady) item {
+                    AplCard {
+                        Text("새 버전을 받았어요", style = MaterialTheme.typography.titleMedium, modifier = Modifier.semantics { heading() })
+                        Text("설치하면 앱이 잠깐 닫혔다가 다시 열려요.", style = MaterialTheme.typography.bodyMedium)
+                        AplButton("지금 업데이트", AplIcon.Check, installUpdate, Modifier.fillMaxWidth())
+                    }
+                }
                 when (page) {
                     "home" -> {
                         item {

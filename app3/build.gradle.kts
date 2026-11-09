@@ -42,6 +42,13 @@ androidComponents.onVariants { variant ->
     variant.sources.kotlin!!.addGeneratedSourceDirectory(prepareChanchanhi3, PrepareChanchanhi3::destination)
     variant.sources.res!!.addGeneratedSourceDirectory(prepareChanchanhi3, PrepareChanchanhi3::generatedResources)
 }
+// Play는 같은 versionCode를 다시 받지 않는다. -Papl.versionCode=N으로 직접 지정하거나,
+// 지정하지 않으면 현재 브랜치의 git 커밋 수를 사용한다(커밋할 때마다 1씩 증가).
+val appVersionCode: Provider<Int> = providers.gradleProperty("apl.versionCode").map { it.trim().toInt() }
+    .orElse(providers.exec {
+        commandLine("git", "rev-list", "--count", "HEAD")
+        isIgnoreExitValue = true
+    }.standardOutput.asText.map { it.trim().toIntOrNull() ?: 1 })
 android {
     namespace = "com.example.aplassistmvp0"
     compileSdk = 36
@@ -49,7 +56,7 @@ android {
         applicationId = "dev.ccomet.apl3"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
+        versionCode = appVersionCode.get()
         versionName = "3.0.0-dev"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -75,6 +82,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation("com.caverock:androidsvg-aar:1.4")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2")
+    implementation("com.google.android.play:app-update:2.1.0")
     debugImplementation(libs.androidx.compose.ui.tooling)
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)
