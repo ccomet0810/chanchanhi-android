@@ -202,8 +202,8 @@ internal class V3GuideEngine(
             message="화면을 확인하고 있어요."))
         request=scope.launch {
             try {
-                // 브리지는 직전 요청 시작 후 350ms 안의 새 요청을 거절한다. 취소된 직전 요청도 이미 시작됐을 수 있으므로 400ms를 둔다.
-                delay(400)
+                // 직전 요청과의 최소 간격(350ms)은 브리지가 짧게 기다려 맞춘다.
+                delay(240)
                 var feedback:V3PlanDiagnostic?=null
                 fun repair(attempt:Int,diagnostic:V3PlanDiagnostic?,scopeProof:GuideScopedTap?=null):Boolean {
                     val state=screens.value;val live=state.snapshot

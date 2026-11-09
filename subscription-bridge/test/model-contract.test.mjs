@@ -106,3 +106,22 @@ test('subscription delta text is restored only after completed metadata with emp
   const body=await res.json(); assert.equal(body.usage.input_tokens,120);
   assert.equal(JSON.parse(body.output[0].content[0].text).choice,'node_1');
 });
+test('back-to-back subscription requests wait out the 350ms spacing instead of failing with 429', async t => {
+  let calls=0;
+  const f=await fixture(t,{fetcher:async()=>{calls++;return new Response(`data: ${JSON.stringify({type:'response.completed',response:completed()})}\n\n`,{headers:{'Content-Type':'text/event-stream'}});}});
+  assert.equal((await f.call()).status,200);
+  const began=performance.now();
+  const second=await f.call();
+  assert.equal(second.status,200);
+  assert.ok(performance.now()-began>=300,'second request must still respect the minimum spacing');
+  assert.equal(calls,2);
+});
+test('a request still in flight after the wait window is rejected as busy', async t => {
+  let release; const waiting=new Promise(resolve=>{release=resolve;});
+  const f=await fixture(t,{fetcher:async()=>{await waiting;return new Response(`data: ${JSON.stringify({type:'response.completed',response:completed()})}\n\n`,{headers:{'Content-Type':'text/event-stream'}});}});
+  const first=f.call();
+  await new Promise(resolve=>setTimeout(resolve,50));
+  const second=await f.call();
+  assert.equal(second.status,429); assert.equal((await second.json()).error,'guide_busy');
+  release(); assert.equal((await first).status,200);
+});

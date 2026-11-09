@@ -207,13 +207,32 @@ export function createBridge({ store, initialState, pairingToken, fetcher = fetc
     } finally { if (activeGuide === controller) activeGuide = null; }
   }
 
+  // 폰은 화면이 바뀌면 이전 요청을 취소하고 약 240ms 뒤 새 요청을 보낸다. 취소된 요청이 정리되거나
+  // 최소 간격(350ms)이 지날 때까지 최대 1초만 기다리고, 그래도 비지 않으면 기존처럼 429로 거절한다.
+  async function awaitModelSlot(signal, maxWaitMs = 1000) {
+    const until = performance.now() + maxWaitMs;
+    for (;;) {
+      signal.throwIfAborted();
+      const gap = 350 - (now() - lastGuideStart);
+      if (!activeGuide && gap <= 0) return;
+      if (performance.now() >= until) {
+        if (activeGuide) throw new BridgeError('guide_busy', '이전 구독 요청이 끝나면 다시 시작해주세요.', 429);
+        throw new BridgeError('guide_rate_limit', '잠시 뒤 직접 다시 요청해주세요.', 429);
+      }
+      await new Promise((resolve, reject) => {
+        const abort = () => { clearTimeout(timer); reject(signal.reason ?? new DOMException('Cancelled', 'AbortError')); };
+        const timer = setTimeout(() => { signal.removeEventListener('abort', abort); resolve(); }, Math.min(50, Math.max(gap, 10)));
+        signal.addEventListener('abort', abort, { once: true });
+      });
+    }
+  }
+
   async function modelResponse(value, controller) {
     const input = validateModelRequest(value);
+    await awaitModelSlot(controller.signal);
     const selected = account();
     if (!accountReady(selected, { allowPendingRefresh: true })) throw new BridgeError('not_ready', 'PC 연결 화면에서 ChatGPT 계정과 크레딧 설정을 확인해주세요.', 409);
     if (!selected.models.some(model => model.slug === input.model)) throw new BridgeError('model_unavailable', '구독 계정에서 선택한 모델을 사용할 수 없습니다.', 403);
-    if (activeGuide) throw new BridgeError('guide_busy', '이전 구독 요청이 끝나면 다시 시작해주세요.', 429);
-    if (now() - lastGuideStart < 350) throw new BridgeError('guide_rate_limit', '잠시 뒤 직접 다시 요청해주세요.', 429);
     activeGuide = controller; lastGuideStart = now();
     const operationEpoch = epoch;
     try {
