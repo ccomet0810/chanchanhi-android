@@ -1,0 +1,4 @@
+<voice-interaction-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:sessionService="dev.ccomet.chanchanhi04.platform.AssistantSessionService"
+    android:recognitionService="com.example.aplassistmvp0.assistant.AplRecognitionService"
+    android:supportsAssist="true" android:supportsLaunchVoiceAssistFromKeyguard="false" />

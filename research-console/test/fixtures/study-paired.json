@@ -1,0 +1,98 @@
+[
+  {
+    "seq": 1,
+    "at": 1700000000001,
+    "kind": "consent_given",
+    "data": {
+      "participantId": "public-paired-person-0007",
+      "runId": "public-paired-run-0007",
+      "templateVersion": "pilot-7",
+      "consentVersion": "study-consent-1",
+      "records": true,
+      "captures": false,
+      "testFixture": true
+    }
+  },
+  {
+    "seq": 2,
+    "at": 1700000000002,
+    "kind": "profile_submitted",
+    "data": {
+      "name": "공개 시험 참여자",
+      "age": 70,
+      "gender": "응답하지 않음",
+      "occupation": "은퇴"
+    }
+  },
+  {
+    "seq": 3,
+    "at": 1700000000003,
+    "kind": "baseline_submitted",
+    "data": {
+      "difficulty": 4,
+      "find": 2,
+      "continue": 2,
+      "recover": 1
+    }
+  },
+  {
+    "seq": 4,
+    "at": 1700000000004,
+    "kind": "mission_assigned",
+    "data": {
+      "id": "scenario-chanchanhi-assistant-7",
+      "title": "찬찬히를 옆 버튼으로 부르기",
+      "description": "찬찬히의 안내를 보며 휴대폰 설정에서 기본 디지털 어시스턴트를 찬찬히로 바꿔주세요.\n\n설정한 뒤 홈 화면에서 옆 버튼을 길게 눌러 찬찬히가 열리는지 확인해주세요.",
+      "goal": "기본 디지털 도우미 앱을 찬찬히로 설정하고 실제 옆 버튼 호출을 확인하도록 안내해주세요. 현재 기기의 실제 기본 도우미 상태와 설치된 앱 이름은 제품이 제공한 기기 정보에서 확인하세요. 이미 설정되어 있으면 다시 선택하거나 끄지 말고 호출 확인부터 진행하세요. 필요한 경우 사용자가 설정 앱을 직접 찾고 열도록 현재 화면을 관찰하며 한 번에 한 동작씩 안내하세요. 검색 결과, 메뉴 이름과 제조사 차이를 관찰하고 고정 버튼 순서를 가정하지 마세요. 마이크는 앱 내부 Android 런타임 권한으로 별도 준비하므로 설정 앱에서 마이크 권한을 변경하도록 안내하지 마세요. 기본 도우미 지정은 실제 OS 상태로 확인하고, 홈 화면에서 옆 버튼을 길게 눌러 찬찬히가 실제로 열린 호출 이벤트를 확인해야 완료예요. 시간이 지났거나 사용자가 완료했다고 말한 것만으로 호출 성공을 가정하지 마세요."
+    }
+  },
+  {
+    "kind": "mission_knowledge_answered",
+    "data": {
+      "missionId": "scenario-chanchanhi-assistant-7",
+      "answer": "partial",
+      "method": ""
+    },
+    "seq": 5,
+    "at": 1700000000005
+  },
+  {
+    "seq": 6,
+    "at": 1700000000006,
+    "kind": "mission_pre_submitted",
+    "data": {
+      "missionId": "scenario-chanchanhi-assistant-7",
+      "confidence": 2
+    }
+  },
+  {
+    "seq": 7,
+    "at": 1700000000007,
+    "kind": "guidance_linked",
+    "data": {
+      "missionId": "scenario-chanchanhi-assistant-7",
+      "sessionId": "public-paired-guidance-0007"
+    }
+  },
+  {
+    "seq": 8,
+    "at": 1700000000008,
+    "kind": "mission_result_submitted",
+    "data": {
+      "missionId": "scenario-chanchanhi-assistant-7",
+      "outcome": "마쳤어요"
+    }
+  },
+  {
+    "seq": 9,
+    "at": 1700000000009,
+    "kind": "post_submitted",
+    "data": {
+      "task_confidence": 4,
+      "find": 4,
+      "continue": 4,
+      "recover": 4,
+      "confidence_gain": 4
+    }
+  }
+]

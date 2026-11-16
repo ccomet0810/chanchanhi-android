@@ -57,6 +57,8 @@ data class AccessibilityNodeModel(
     val localInputRevision: Long? = null,
     val heading: Boolean = false,
     val paneTitle: String? = null,
+    // In-process equality token for a draft and a message bubble. Never encode or persist it.
+    internal val localMessageKey: Long? = null,
 ) {
     /** 클릭 행 자체에 글자가 없어도 가까운 자식의 글자를 목록 이름으로 사용한다. */
     val displayLabel: String
@@ -115,7 +117,7 @@ object AccessibilityNodePrivacy {
     fun publicInputLabel(node: AccessibilityNodeModel): String {
         // Stable public roles take precedence over transient Samsung hints such as '채팅+'.
         val resource = node.viewIdResourceName.orEmpty().substringAfterLast('/').lowercase(java.util.Locale.ROOT)
-        if (Regex("^(?:message_edit_text|message_body|message_input|sms_body|compose_message|body_input)$").matches(resource))
+        if (isMessageComposer(resource))
             return "메시지 내용 입력란"
         if (Regex("^(?:recipient_input|recipient_edit_text|recipient_number|recipients_editor)$").matches(resource))
             return "받는 사람 입력란"
@@ -132,6 +134,12 @@ object AccessibilityNodePrivacy {
             else -> "입력란"
         }
     }
+
+    internal fun isMessageComposer(resource: String?) = resource.orEmpty().substringAfterLast('/') in
+        setOf("message_edit_text", "message_body", "message_input", "sms_body", "compose_message", "body_input")
+
+    internal fun isMessageBody(resource: String?) = resource.orEmpty().substringAfterLast('/') in
+        setOf("message", "message_text", "message_body", "chat_message_text")
 
     fun isSensitivePreview(node: AccessibilityNodeModel) = !isEditable(node) &&
         !RecipientResultBinding.isSafeMatch(node) &&

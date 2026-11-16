@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="setup_checklist_min_width">240dp</dimen>
+    <dimen name="setup_checklist_min_height">360dp</dimen>
+</resources>

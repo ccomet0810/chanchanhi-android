@@ -1,0 +1,8 @@
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowStateChanged|typeWindowContentChanged|typeWindowsChanged|typeViewClicked|typeViewLongClicked|typeViewScrolled|typeViewTextChanged|typeViewFocused|typeViewSelected"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagReportViewIds|flagRetrieveInteractiveWindows"
+    android:canRetrieveWindowContent="true" android:canTakeScreenshot="true"
+    android:isAccessibilityTool="false" android:notificationTimeout="100"
+    android:description="@string/accessibility_description"
+    android:settingsActivity="dev.ccomet.chanchanhi04.MainActivity" />

@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">chanchanhi-test</string>
+    <string name="accessibility_name">! ✨ 찬찬히 화면 안내 ✨ !</string>
+    <string name="accessibility_description">화면의 항목을 읽고 필요한 행동을 강조와 음성으로 안내합니다. 사용자가 직접 조작합니다. 화면 이미지는 이미지 확인을 허용한 경우에만 AI에 전달합니다.</string>
+    <style name="AppTheme" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#246747</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+    </style>
+    <style name="VoiceInputTheme" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowCloseOnTouchOutside">false</item>
+    </style>
+</resources>

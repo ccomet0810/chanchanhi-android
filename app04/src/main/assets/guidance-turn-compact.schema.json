@@ -1,0 +1,278 @@
+{
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "callId": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "plan": {
+      "type": "array",
+      "maxItems": 12,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "step": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 180
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_progress",
+              "completed"
+            ]
+          }
+        },
+        "required": [
+          "step",
+          "status"
+        ]
+      }
+    },
+    "command": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "observe",
+                "capture_screen",
+                "list_apps"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "update_plan"
+              ]
+            }
+          },
+          "required": [
+            "name"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "open_app"
+              ]
+            },
+            "packageName": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 200
+            },
+            "instruction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 240
+            }
+          },
+          "required": [
+            "name",
+            "packageName",
+            "instruction"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "guide"
+              ]
+            },
+            "snapshotId": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "nodeId": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "region": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "action": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "enum": [
+                null,
+                "tap",
+                "long_press",
+                "swipe_up",
+                "swipe_down",
+                "swipe_left",
+                "swipe_right",
+                "input",
+                "adjust",
+                "back",
+                "home",
+                "notifications",
+                "quick_settings"
+              ]
+            },
+            "instruction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 240
+            },
+            "expectedChange": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 240
+            }
+          },
+          "required": [
+            "name",
+            "snapshotId",
+            "nodeId",
+            "region",
+            "action",
+            "instruction",
+            "expectedChange"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "ask_user"
+              ]
+            },
+            "question": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 240
+            },
+            "options": {
+              "type": "array",
+              "maxItems": 5,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            }
+          },
+          "required": [
+            "name",
+            "question",
+            "options"
+          ]
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "type": "string",
+              "enum": [
+                "finish"
+              ]
+            },
+            "snapshotId": {
+              "type": [
+                "integer",
+                "null"
+              ]
+            },
+            "region": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "integer"
+              },
+              "minItems": 4,
+              "maxItems": 4
+            },
+            "evidenceNodeIds": {
+              "type": "array",
+              "maxItems": 12,
+              "items": {
+                "type": "integer"
+              }
+            },
+            "instruction": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "maxLength": 240
+            }
+          },
+          "required": [
+            "name",
+            "snapshotId",
+            "region",
+            "evidenceNodeIds",
+            "instruction"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "callId",
+    "summary",
+    "plan",
+    "command"
+  ]
+}

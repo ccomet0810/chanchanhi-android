@@ -31,3 +31,5 @@ plugins {
 
 rootProject.name = "Chanchanhi Android"
 include(":app3")
+
+include(":app04")

@@ -110,6 +110,11 @@ class AccessibilityTreeParser {
                 heading = android.os.Build.VERSION.SDK_INT >= 28 && read(false) { node.isHeading },
                 paneTitle = if (!password && !sensitive && !editable && !clickable && android.os.Build.VERSION.SDK_INT >= 28)
                     read<String?>(null) { label(node.paneTitle) } else null,
+                localMessageKey = if (!password && resourceName != "android:id/message" &&
+                    (editable && hasInput == true && !sensitive && AccessibilityNodePrivacy.isMessageComposer(resourceName) ||
+                        !editable && sensitive && AccessibilityNodePrivacy.isMessageBody(resourceName))) read<Long?>(null) {
+                    LocalInputRevisions.messageKey(packageName,root.windowId,node.text)
+                } else null,
             )
 
             // 이 화면에서 사용자가 직접 입력한 이름과 이름 전용 리소스만 비교한다.

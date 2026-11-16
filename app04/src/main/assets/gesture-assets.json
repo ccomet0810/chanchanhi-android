@@ -1,0 +1,17 @@
+{
+  "source": "gesture-motion-lab/editor/motions",
+  "reviewThread": "01a1ce82-a5ad-7d11-b733-55e020944ac7",
+  "sha256": {
+    "double_tap.json": "6d74fc926c5d63763921fc373f7694105d1bcdf567954479f49d8295bc760b33",
+    "drag_drop.json": "3c761714946cd661700042c16d62ed2edd28a8428f450d7735db82719bff2b53",
+    "hold_drag.json": "5852af3eefaf9c4f689f8dab2c8c70df80c9380d3c458b06bec3856b67bb88a7",
+    "long_press.json": "3324b6722e1e52e80e84208acc76d7bf7679e20cee0d4ac3605f0f0c211a6e1a",
+    "swipe_down.json": "793066aa2e2ed5100c0bd4560a6f07d8eddb989a9084bd524bd1f5fdeebd4975",
+    "swipe_left.json": "d89257e50057dfdd43d8c34620d8fe0b684ef2c39f60fb397f9968298ffabb9c",
+    "swipe_right.json": "b0de2313184114b401b78bbf26227b90f855f51cbd85ad6df747fefe236c5288",
+    "swipe_up.json": "7023e662f7672f750e3b223171e591e453a6032c023c872d7f86c2e7c9d295c4",
+    "tap.json": "6585c3ede8703deb1bb1282c48d22b0fb702769b7e939af68f07356b28f166e3",
+    "zoom_in.json": "72a8caf485874fdbcfbb56b9cd7dd344243246c1b9d3c17a641e04c103d3ea9b",
+    "zoom_out.json": "a2397f328c487a11d886025145008bcf511fbb09c323e6fb6774af284e0e6bf2"
+  }
+}

@@ -9,6 +9,8 @@ internal object LocalInputRevisions {
     private data class Key(val pkg:String,val window:Int,val path:String,val role:String,val resource:String)
     private data class Entry(var digest:ByteArray,var revision:Long,var bounds:NodeBounds)
     private val entries=linkedMapOf<Key,Entry>()
+    private data class MessageKey(val window:Int,val digest:ByteArray,val id:Long)
+    private val messageKeys=ArrayDeque<MessageKey>()
     private var secret=newSecret()
     private var serial=0L
     @Volatile var changeVersion=0L;private set
@@ -21,7 +23,22 @@ internal object LocalInputRevisions {
     @Synchronized fun bind(onMutation:(String,Int)->Unit){listener=onMutation}
     @Synchronized fun enable(packageName:String?=null){enabled=true;targetPackage=packageName}
     @Synchronized fun deactivate(){enabled=false;targetPackage=null;clear()}
-    @Synchronized fun clear(){entries.values.forEach{it.digest.fill(0)};entries.clear();secret.fill(0);secret=newSecret();changeVersion++}
+    @Synchronized fun clear(){entries.values.forEach{it.digest.fill(0)};entries.clear();messageKeys.forEach{it.digest.fill(0)};messageKeys.clear();secret.fill(0);secret=newSecret();changeVersion++}
+    @Synchronized fun messageKey(pkg:String?,window:Int,value:CharSequence?):Long? {
+        if (!enabled || targetPackage == null || pkg != targetPackage || window < 0 || value.isNullOrBlank() || value.length > 4096) return null
+        val mac = Mac.getInstance("HmacSHA256").apply { init(SecretKeySpec(secret,"HmacSHA256")) }
+        val bytes = value.toString().toByteArray(Charsets.UTF_8)
+        val digest = try { mac.doFinal(bytes) } finally { bytes.fill(0) }
+        val existing = messageKeys.firstOrNull { it.window == window && it.digest.contentEquals(digest) }
+        if (existing != null) {
+            digest.fill(0)
+            return existing.id
+        }
+        val id = ++serial
+        messageKeys.addLast(MessageKey(window,digest,id))
+        if (messageKeys.size > 160) messageKeys.removeFirst().digest.fill(0)
+        return id
+    }
     @Synchronized fun capture(pkg:String?,window:Int,path:String,role:String?,resource:String?,bounds:NodeBounds,value:CharSequence?):Long? {
         if(!enabled || pkg.isNullOrBlank() || targetPackage!=null && pkg!=targetPackage || window<0 || value==null || value.length>32_768)return null
         val key=Key(pkg,window,path,role.orEmpty(),resource.orEmpty())

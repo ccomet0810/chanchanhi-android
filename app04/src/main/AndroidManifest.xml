@@ -1,0 +1,54 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <queries>
+        <intent><action android:name="android.settings.SETTINGS" /></intent>
+        <intent><action android:name="android.settings.APP_SEARCH_SETTINGS" /></intent>
+        <intent><action android:name="android.intent.action.SEARCH" /></intent>
+        <intent><action android:name="android.settings.PICTURE_IN_PICTURE_SETTINGS" /></intent>
+        <intent><action android:name="android.settings.ACCESSIBILITY_SETTINGS" /></intent>
+        <intent><action android:name="android.settings.ACCESSIBILITY_DETAILS_SETTINGS" /></intent>
+        <intent><action android:name="android.settings.APPLICATION_DETAILS_SETTINGS" /><data android:scheme="package" /></intent>
+        <intent><action android:name="android.settings.VOICE_INPUT_SETTINGS" /></intent>
+        <intent><action android:name="android.settings.MANAGE_DEFAULT_APPS_SETTINGS" /></intent>
+        <intent><action android:name="android.intent.action.MANAGE_APP_PERMISSIONS" /></intent>
+        <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent>
+        <intent><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.HOME" /></intent>
+        <intent><action android:name="android.intent.action.TTS_SERVICE" /></intent>
+        <intent><action android:name="android.speech.RecognitionService" /></intent>
+        <intent><action android:name="android.speech.action.RECOGNIZE_SPEECH" /></intent>
+    </queries>
+    <application android:allowBackup="false" android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:supportsRtl="true"
+        android:networkSecurityConfig="@xml/network_security_config" android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize">
+            <intent-filter><action android:name="android.intent.action.MAIN" /><category android:name="android.intent.category.LAUNCHER" /></intent-filter>
+        </activity>
+        <activity android:name=".VoiceInputActivity" android:exported="false" android:launchMode="singleTop"
+            android:taskAffinity="${applicationId}.voice"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" android:theme="@style/VoiceInputTheme" />
+        <activity android:name=".AdminActivity" android:exported="false" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".ScreenSetupHelpActivity" android:exported="false" android:launchMode="singleTop"
+            android:taskAffinity="${applicationId}.screen_setup_help" android:excludeFromRecents="true"
+            android:supportsPictureInPicture="true" android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation">
+            <layout android:minWidth="@dimen/setup_checklist_min_width" android:minHeight="@dimen/setup_checklist_min_height" />
+        </activity>
+        <service android:name=".platform.ScreenService" android:exported="true"
+            android:label="@string/accessibility_name" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/accessibility_service" />
+        </service>
+        <service android:name=".platform.AssistantService" android:exported="true"
+            android:label="@string/app_name" android:permission="android.permission.BIND_VOICE_INTERACTION">
+            <intent-filter><action android:name="android.service.voice.VoiceInteractionService" /></intent-filter>
+            <meta-data android:name="android.voice_interaction" android:resource="@xml/voice_service" />
+        </service>
+        <service android:name=".platform.AssistantSessionService" android:exported="true"
+            android:permission="android.permission.BIND_VOICE_INTERACTION" />
+        <service android:name="com.example.aplassistmvp0.assistant.AplRecognitionService" android:exported="true"
+            android:permission="android.permission.RECORD_AUDIO">
+            <intent-filter><action android:name="android.speech.RecognitionService" /></intent-filter>
+        </service>
+    </application>
+</manifest>

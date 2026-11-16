@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        <activity android:name="dev.ccomet.chanchanhi04.qa.PublicFixtureActivity" android:exported="true" />
+        <!-- Opt-in label sorting probes. They cannot read windows and are disabled in normal test builds. -->
+        <service android:name="dev.ccomet.chanchanhi04.qa.SortBangService" android:label="! 찬찬히 정렬 시험" android:enabled="${sortProbeEnabled}" android:exported="true" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/sort_probe" />
+        </service>
+        <service android:name="dev.ccomet.chanchanhi04.qa.SortNumberService" android:label="1 찬찬히 정렬 시험" android:enabled="${sortProbeEnabled}" android:exported="true" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/sort_probe" />
+        </service>
+        <service android:name="dev.ccomet.chanchanhi04.qa.SortStarService" android:label="★ 찬찬히 정렬 시험" android:enabled="${sortProbeEnabled}" android:exported="true" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/sort_probe" />
+        </service>
+        <service android:name="dev.ccomet.chanchanhi04.qa.SortEmojiService" android:label="😀 찬찬히 정렬 시험" android:enabled="${sortProbeEnabled}" android:exported="true" android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter><action android:name="android.accessibilityservice.AccessibilityService" /></intent-filter>
+            <meta-data android:name="android.accessibilityservice" android:resource="@xml/sort_probe" />
+        </service>
+    </application>
+</manifest>

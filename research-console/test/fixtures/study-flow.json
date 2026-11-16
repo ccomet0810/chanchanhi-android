@@ -1,0 +1,10 @@
+[
+ {"seq":1,"at":1700000000001,"kind":"consent_given","data":{"participantId":"public-participant-0001","runId":"public-study-run-0001","templateVersion":"pilot-1","consentVersion":"study-consent-1","records":true,"captures":false,"testFixture":true}},
+ {"seq":2,"at":1700000000002,"kind":"profile_submitted","data":{"name":"공개 시험 참여자","age":70,"gender":"응답하지 않음","occupation":"은퇴"}},
+ {"seq":3,"at":1700000000003,"kind":"baseline_submitted","data":{"experience":5,"difficulty":4,"find":2,"continue":2,"recover":1}},
+ {"seq":4,"at":1700000000004,"kind":"mission_assigned","data":{"id":"public-mission-0001","title":"공개 시험 화면에서 다음 단계 버튼을 눌러보세요","description":"개인정보를 입력하지 않는 공개 시험 화면이에요.","goal":"공개 시험 화면의 다음 단계 버튼을 눌러 시험 결과 화면을 확인하도록 안내해주세요."}},
+ {"seq":5,"at":1700000000005,"kind":"mission_pre_submitted","data":{"missionId":"public-mission-0001","confidence":2}},
+ {"seq":6,"at":1700000000006,"kind":"guidance_linked","data":{"missionId":"public-mission-0001","sessionId":"public-guidance-0001"}},
+ {"seq":7,"at":1700000000007,"kind":"mission_result_submitted","data":{"missionId":"public-mission-0001","outcome":"마쳤어요"}},
+ {"seq":8,"at":1700000000008,"kind":"post_submitted","data":{"task_confidence":4,"find":4,"continue":4,"recover":3,"helpful":4}}
+]
