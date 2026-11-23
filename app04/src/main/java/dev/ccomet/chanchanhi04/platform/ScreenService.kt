@@ -194,8 +194,11 @@ class ScreenService : AccessibilityService() {
         val inViewport=public.filter{it.bounds.right>0&&it.bounds.bottom>0&&it.bounds.left<metrics.width()&&it.bounds.top<metrics.height()}
         if(inViewport.isEmpty()){lastReadFailure="offscreen_transition";return null}
         val retained = inViewport.take(400)
+        // 스크린샷을 보낼 때 칠할 영역. 비밀번호 노드는 AI 요청 목록에서 빠지므로 여기서 위치만 따로 남긴다.
+        val privateRegions = parsed.allNodes.filter { it.visibleToUser && !it.bounds.isEmpty &&
+            (it.password || it.editable || it.sensitiveContent || AccessibilityNodePrivacy.isSensitivePreview(it)) }.map { it.bounds }
         return Observation(++nextSnapshot,pkg,readWindowId,epoch,visualGeneration,metrics.width(),metrics.height(),
-            !parsed.truncated && inViewport.size == retained.size,retained,inViewport.size-retained.size)
+            !parsed.truncated && inViewport.size == retained.size,retained,inViewport.size-retained.size,privateRegions)
     }
 
     suspend fun capture(): ScreenImage = captureMutex.withLock { captureUnlocked() }

@@ -259,6 +259,9 @@ class AgentLoop(private val scope: CoroutineScope, private val model: AgentModel
             }
             Tool.CAPTURE_SCREEN -> {
                 if (!device.imagesAllowed) { result("unavailable", "사용자가 이미지 확인을 허용하지 않았습니다. 접근성 정보로 판단하거나 필요한 행동을 물어보세요."); return null }
+                if (dev.ccomet.chanchanhi04.privacy.ScreenPrivacyPolicy.isSensitiveApp(original.packageName)) {
+                    result("unavailable", "금융·인증·건강 앱 화면 이미지는 개인정보 보호를 위해 보내지 않습니다. 접근성 정보로 판단하거나 필요한 행동을 물어보세요."); return null
+                }
                 try {
                     val captured = device.capture()
                     image = captured

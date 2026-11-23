@@ -20,6 +20,8 @@ data class Observation(
     val id: Long, val packageName: String, val windowId: Int, val epoch: Long,
     val visualGeneration: Long, val width: Int, val height: Int, val complete: Boolean,
     val elements: List<Element>, val omitted: Int = 0,
+    /** 비밀번호·입력란·비공개 미리보기 영역(화면 좌표). 스크린샷 가림에만 쓰며 AI 요청에 넣지 않는다. */
+    val privateRegions: List<NodeBounds> = emptyList(),
 )
 
 /** Structural equality for trace deduplication; snapshot and animation counters do not alter node content. */
