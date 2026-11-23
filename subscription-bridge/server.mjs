@@ -8,6 +8,7 @@ import { VmSecureStore, loadVmPairingToken } from './vm-storage.mjs';
 import { renderPage } from './page.mjs';
 import { validateModelRequest, modelResult } from './model-contract.mjs';
 import { createDecisionApi } from './decisions-api.mjs';
+import { assertNoRawPii } from './privacy-guard.mjs';
 import { BridgeError, OpenAiProtocol, makeAuthorization, validateCallback, tokenFields,
   randomSecret, equalSecret, RESOURCE, validateGuideInput, validateGuideResult,
   sensitiveGoal, readResponseStream, GUIDE_INSTRUCTIONS } from './protocol.mjs';
@@ -229,6 +230,7 @@ export function createBridge({ store, initialState, pairingToken, fetcher = fetc
 
   async function modelResponse(value, controller) {
     const input = validateModelRequest(value);
+    assertNoRawPii(input);
     await awaitModelSlot(controller.signal);
     const selected = account();
     if (!accountReady(selected, { allowPendingRefresh: true })) throw new BridgeError('not_ready', 'PC 연결 화면에서 ChatGPT 계정과 크레딧 설정을 확인해주세요.', 409);

@@ -83,6 +83,7 @@ object AppRuntime {
         study=dev.ccomet.chanchanhi04.study.StudyRepository(context)
         study.ensureDefaultMission()
         log = SessionLog(context,study){goal->isStudySetupTask()&&capabilityContext?.goal==goal}; model = V04Model(context,log::boundEvent)
+        model.preparePrivacy()
         dev.ccomet.chanchanhi04.research.ResearchConnection(context).retry()
         device = object : DevicePort {
             override suspend fun observe() = requireService().observe()

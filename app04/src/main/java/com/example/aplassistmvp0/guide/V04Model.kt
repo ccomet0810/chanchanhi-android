@@ -11,6 +11,8 @@ internal class V04Model(context: Context,private val traceFactory:()->((String,A
     private val app = context.applicationContext as android.app.Application
     private val store = BridgeConnectionStore(app)
     private val bridge = SubscriptionBridgeClient(store)
+    private val privacy = dev.ccomet.chanchanhi04.privacy.LocalPrivacyShield()
+    fun preparePrivacy() = privacy.prepare()
     private val compact = dev.ccomet.chanchanhi04.BuildConfig.COMPACT_GUIDANCE
     private val formatName get() = if(compact) "guidance_turn_v04_motion" else "guidance_turn_v04"
     private val schema by lazy { app.assets.open(if(compact) "guidance-turn-motion.schema.json" else "guidance-turn.schema.json").bufferedReader().use { JSONObject(it.readText()) } }
@@ -21,7 +23,11 @@ internal class V04Model(context: Context,private val traceFactory:()->((String,A
         val building=android.os.SystemClock.elapsedRealtime()
         val capabilities=dev.ccomet.chanchanhi04.setup.SetupPermissions.read(app)
         val environment="\n제품이 확인한 현재 찬찬히 상태: 앱 이름=${app.getString(dev.ccomet.chanchanhi04.R.string.app_name)}, package=${app.packageName}, 화면 안내=${capabilities.screen}, 마이크=${capabilities.microphone}, 기본 디지털 도우미=${capabilities.assistant}. 이미 허용된 설정은 끄거나 다시 선택시키지 않는다."
-        val packet=ModelPackets.build(request,schema,(if(compact) COMPACT_INSTRUCTIONS else INSTRUCTIONS)+environment,MODEL,formatName)
+        // 온라인으로 나가기 전에 휴대폰에서 개인정보를 가린다(원본 request는 화면 근거 비교에 그대로 쓴다).
+        val vault=privacy.vaultFor(request)
+        val shielded=privacy.protect(request,vault,trace)
+        val packet=ModelPackets.build(shielded,schema,(if(compact) COMPACT_INSTRUCTIONS else INSTRUCTIONS)+environment,MODEL,formatName)
+        dev.ccomet.chanchanhi04.privacy.PrivacyGateway.assertClean(packet.context.toString())
         trace("model_request",packet.context)
         trace("model_transport",mapOf("payloadBytes" to packet.bytes.size,"hasImage" to (request.image!=null),
             "packetBuildMs" to (android.os.SystemClock.elapsedRealtime()-building),"packetBuildPasses" to packet.buildPasses,"format" to formatName))
@@ -44,7 +50,8 @@ internal class V04Model(context: Context,private val traceFactory:()->((String,A
         val decoded=try {AgentJson.call(JSONObject(parts.single().getString("text")))}
             catch(_:IllegalArgumentException){throw ModelOutputFailure("invalid_tool_shape")}
             catch(_:org.json.JSONException){throw ModelOutputFailure("invalid_tool_shape")}
-        decoded.also { call ->
+        // AI는 토큰([이름1] 등)만 봤다. 사용자에게 보여주고 읽어주기 전에 휴대폰에서만 원문으로 되돌린다.
+        privacy.restore(decoded,vault).also { call ->
             if(call.nodeId != null && call.nodeId !in packet.visibleNodeIds ||
                 call.evidenceNodeIds.any { id -> id !in packet.visibleNodeIds }) throw ModelOutputFailure("unobserved_node_reference")
             // A clipped request cannot establish a complete observation in the execution layer.

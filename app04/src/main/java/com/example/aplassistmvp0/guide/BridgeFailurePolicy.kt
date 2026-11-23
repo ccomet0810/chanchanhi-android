@@ -4,6 +4,7 @@ package com.example.aplassistmvp0.guide
 internal object BridgeFailurePolicy {
     fun message(status:Int,code:String?):String = when {
         status in setOf(401,403) -> "서버 연결 키와 구독 인증을 확인해주세요."
+        code=="privacy_blocked" -> "가리지 못한 개인정보가 있어 서버가 요청을 막았어요. 현재 화면에서 다시 시도해주세요."
         code=="guide_busy" -> "다른 AI 요청이 진행 중이에요. 잠시 뒤 이어가세요."
         code=="guide_rate_limit" -> "요청이 이어지고 있어요. 잠시 뒤 이어가세요."
         code=="invalid_model_request" -> "앱과 서버의 0.4 연결 규격을 확인해주세요."
